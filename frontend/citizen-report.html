@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Road Issue - Citizen Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚧 Report Road Maintenance Issue</h1>
+            <p>Help us fix roads faster by reporting problems in your area</p>
+        </header>
+
+        <div class="form-container">
+            <form id="reportForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="name">Your Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description of Issue *</label>
+                    <textarea id="description" name="description" rows="4" 
+                        placeholder="Describe the problem (e.g., large pothole, broken road surface, damaged sidewalk)" 
+                        required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location Address *</label>
+                    <input type="text" id="location" name="location" 
+                        placeholder="Enter address or landmark" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Location on Map (Optional)</label>
+                    <div id="map" style="height: 300px; width: 100%;"></div>
+                    <small>Click on map to set exact location</small>
+                    <input type="hidden" id="lat" name="lat">
+                    <input type="hidden" id="lng" name="lng">
+                </div>
+
+                <div class="form-group">
+                    <label for="image">Upload Photo *</label>
+                    <input type="file" id="image" name="image" accept="image/*" required>
+                    <small>Upload a clear photo of the issue (max 5MB)</small>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="useLocation" checked>
+                        Use my current location
+                    </label>
+                </div>
+
+                <button type="submit" id="submitBtn">Submit Report</button>
+            </form>
+        </div>
+
+        <div id="successMessage" class="success-message" style="display: none;">
+            ✓ Report submitted successfully! Thank you for helping improve our roads.
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/citizen.js"></script>
+</body>
+</html>

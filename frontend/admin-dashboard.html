@@ -1,0 +1,232 @@
+<!--<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Road Maintenance Reports</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="admin-container">
+        <header style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+            <h1>📊 Admin Dashboard</h1>
+            <p>Manage and track road maintenance reports</p>
+        </header>
+        
+        <div class="stats-grid" id="statsGrid">
+            
+        </div>
+        
+        <div class="reports-table">
+            <h2>All Reports</h2>
+            <div style="overflow-x: auto;">
+                <table id="reportsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportsBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center;">Loading reports...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/admin.js"></script>
+</body>
+</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Road Maintenance System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 10px 20px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.9);
+            transform: translateY(-2px);
+        }
+        
+        .login-prompt {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .login-prompt i {
+            font-size: 64px;
+            color: #9ca3af;
+            margin-bottom: 20px;
+        }
+        
+        .login-prompt h2 {
+            margin-bottom: 10px;
+            color: #374151;
+        }
+        
+        .login-prompt p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        
+        .login-prompt button {
+            width: auto;
+            display: inline-block;
+            padding: 12px 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Logout Button -->
+    <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+    
+    <div class="admin-container" id="dashboardContent">
+        <!-- Dashboard content will be shown only if logged in -->
+    </div>
+
+    <script>
+        // Check if admin is logged in
+        function checkLogin() {
+            const isLoggedIn = localStorage.getItem('admin_logged_in');
+            
+            if (isLoggedIn !== 'true') {
+                // Not logged in - show login prompt
+                document.getElementById('dashboardContent').innerHTML = `
+                    <div class="login-prompt">
+                        <i class="fas fa-lock"></i>
+                        <h2>Access Restricted</h2>
+                        <p>Please login to access the admin dashboard</p>
+                        <button onclick="window.location.href='admin-login.html'">
+                            <i class="fas fa-sign-in-alt"></i> Go to Login
+                        </button>
+                    </div>
+                `;
+                return false;
+            }
+            return true;
+        }
+        
+        // Logout function
+        function logout() {
+            localStorage.removeItem('admin_logged_in');
+            window.location.href = 'admin-login.html';
+        }
+        
+        // Load dashboard only if logged in
+        if (checkLogin()) {
+            // Load the actual dashboard content
+            loadDashboardContent();
+        }
+        
+        function loadDashboardContent() {
+            // This will be filled by admin.js
+            // Keep your existing dashboard HTML structure
+            document.getElementById('dashboardContent').innerHTML = `
+                <header>
+                    <h1><i class="fas fa-chart-line"></i> Admin Dashboard</h1>
+                    <p>Manage and track road maintenance reports</p>
+                </header>
+                
+                <div class="info-note">
+                    <i class="fas fa-info-circle"></i>
+                    Reports are numbered sequentially for easy reference.
+                </div>
+                
+                <div class="stats-grid" id="statsGrid"></div>
+                
+                <div class="sorting-controls">
+                    <div>
+                        <i class="fas fa-sort-amount-down"></i>
+                        <label>Sort By:</label>
+                        <select id="sortBy">
+                            <option value="created_at_desc">📅 Newest First</option>
+                            <option value="created_at_asc">📅 Oldest First</option>
+                            <option value="status">🎯 Status Priority</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <i class="fas fa-filter"></i>
+                        <label>Filter Status:</label>
+                        <select id="filterStatus">
+                            <option value="all">📊 All Reports</option>
+                            <option value="pending">⏳ Pending</option>
+                            <option value="in_progress">🔄 In Progress</option>
+                            <option value="completed">✅ Completed</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="reports-table">
+                    <h2><i class="fas fa-list"></i> All Reports</h2>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Submitted</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reportsBody">
+                                <tr><td colspan="8" style="text-align: center;">Loading reports...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
+            // Load the admin.js functionality
+            const script = document.createElement('script');
+            script.src = 'js/admin.js';
+            document.body.appendChild(script);
+        }
+    </script>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</body>
+</html>

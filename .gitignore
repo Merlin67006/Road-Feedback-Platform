@@ -1,0 +1,38 @@
+# Node.js / npm
+node_modules/
+npm-debug.log*
+package-lock.json
+yarn.lock
+
+# Environment Variables
+.env
+.env.*
+*.env
+!.env.example
+
+# Backend Specific
+backend/node_modules/
+backend/.env
+backend/package-lock.json
+backend/uploads/
+
+# Frontend Specific
+frontend/node_modules/
+frontend/.env
+frontend/package-lock.json
+
+# OS Files
+.DS_Store
+Thumbs.db
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+*.pid
+*.seed
